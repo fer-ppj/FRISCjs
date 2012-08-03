@@ -202,8 +202,8 @@
             <h4> FRISC CT example </h4>
             <p> This example uses a FRISC CT IO unit for simple counting - an in-memory counter is incremented for every 400 periods of the FRISC CT unit. The configuration contains a FRISC CT unit configured at 1000Hz. </p>
             <ul>
-              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_ct.json">Configuration</a> </li>
-              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_ct.frisc">Input program only in a more readable format</a> </li>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_ct.json" target="_blank">Configuration</a> </li>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_ct.frisc" target="_blank">Input program only in a more readable format</a> </li>
             </ul>
           </div>
         </div>
@@ -524,6 +524,8 @@
         var cfg = extractCurrentCfg();
         
         saveCfg(name, cfg);
+        
+        $("#frisc-cfg-save-name").val("");
       });
       
       $("#frisc-cfg-load").click(function() {
@@ -605,6 +607,8 @@
         try {
           var cfg = JSON.parse($("#frisc-cfg-import-text").val());
           loadCfg(cfg);
+          $("#frisc-cfg-import-text").val("");
+          $("#frisc-sim-link").click();
         } catch (e) {
           $("#frisc-cfg-import-help").text("There was an error in parsing your configuration. " + e.toString());
           return;
@@ -961,6 +965,13 @@ lab23 ADD R1, R2, R3\n\
       
       simulator.CPU.onStop = function() {
         simulatorLog("<span class='label label-warning'><b>FRISC processor stopped!</b></span>");
+        
+        var ioUnits = simulator.IO.getIoUnits();
+
+        for (var i=0; i<ioUnits.length; i++) {
+          simulator.IO.getIoUnit(ioUnits[i]).reset();
+        }
+        
         changeState("stopped");
         onStopInternal();
       };
@@ -987,12 +998,6 @@ lab23 ADD R1, R2, R3\n\
           try {
             simulator.CPU.reset();
             breakpoints = [];
-            
-            var ioUnits = simulator.IO.getIoUnits();
-
-            for (var i=0; i<ioUnits.length; i++) {
-              simulator.IO.getIoUnit(ioUnits[i]).reset();
-            }
             
             var source = editor.getSession().getValue();
             if (source.length > 0 && source[source.length-1] !== '\n') {

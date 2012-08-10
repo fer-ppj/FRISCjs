@@ -199,11 +199,39 @@
             <h3> Examples </h3>
             <p> This page contains examples for using FRISCjs. Each example is given as a brief description and a link to a configuration which can be loaded using the Load/Save tab. Just copy/paste the configuration into the import box and click <b>"Import"</b>. </p>
             
+            <h4> Simple addition example </h4>
+            <p> This most basic example adds values from registers R0 and R1 and stores the result into R2. </p>
+            <ul>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/add_numbers.json" target="_blank">Configuration</a> </li>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/add_numbers.frisc" target="_blank">Input program only in a more readable format</a> </li>
+            </ul>
+            
+            <h4> All instructions example </h4>
+            <p> This example doesn't do anything useful, but contains every FRISC instruction. Useful for testing and debugging. </p>
+            <ul>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/all_instructions.json" target="_blank">Configuration</a> </li>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/all_instructions.frisc" target="_blank">Input program only in a more readable format</a> </li>
+            </ul>
+            
             <h4> FRISC CT example </h4>
             <p> This example uses a FRISC CT IO unit for simple counting - an in-memory counter is incremented for every 400 periods of the FRISC CT unit. The configuration contains a FRISC CT unit configured at 1000Hz. </p>
             <ul>
               <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_ct.json" target="_blank">Configuration</a> </li>
               <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_ct.frisc" target="_blank">Input program only in a more readable format</a> </li>
+            </ul>
+            
+            <h4> FRISC PIO example </h4>
+            <p> This example uses a FRISC PIO IO unit for reading 40 data items. The configuration contains a FRISC PIO unit configured at 1000Hz. </p>
+            <ul>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_pio.json" target="_blank">Configuration</a> </li>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_pio.frisc" target="_blank">Input program only in a more readable format</a> </li>
+            </ul>
+            
+            <h4> FRISC DMA example </h4>
+            <p> This example uses a FRISC DMA IO unit for transferring 1000 4-byte words from an IO unit mapped on 0xFFFF3330 to memory starting from location 0x4000, using halting transfer mode. </p>
+            <ul>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_dma.json" target="_blank">Configuration</a> </li>
+              <li> <a href="https://raw.github.com/izuzak/FRISCjs/master/examples/frisc_dma.frisc" target="_blank">Input program only in a more readable format</a> </li>
             </ul>
           </div>
         </div>
@@ -487,12 +515,12 @@
         for (var i=0; i<cfg.ioUnits.length; i++) {
           $("#ioUnitName").val(cfg.ioUnits[i].ioUnitName);
           $("#ioUnitType").val(cfg.ioUnits[i].ioUnitType);
+          $("#ioUnitType").change();
           $("#ioUnitIntLevel").val(cfg.ioUnits[i].intLevel);
           $("#ioUnitMemmapStart").val(cfg.ioUnits[i].memmapStart);
           $("#ioUnitMemmapCount").val(cfg.ioUnits[i].memmapCount);
-          $("#frisc-ct-freq").val(cfg.ioUnits[i].ioUnitFreq);
+          $("#frisc-io-freq").val(cfg.ioUnits[i].ioUnitFreq);
           
-          $("#ioUnitType").change();
           $("#ioUnitFormStatic").submit();
         }
       }
@@ -1092,7 +1120,7 @@ lab23 ADD R1, R2, R3\n\
       });
 
       var ioUnitMustacheTemplate = ' \
-        <div id="iounit-{{id}}" class="form-inline" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; -moz-box-shadow: 0px 0px 4px #000000; -webkit-box-shadow: 0px 0px 4px #000000; box-shadow: 0px 0px 4px #000000; padding: 5px; margin-left: 20px; margin-bottom:20px; width: 550px; float: left;"> \
+        <div id="iounit-{{id}}" class="form-inline" style="-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; -moz-box-shadow: 0px 0px 4px #000000; -webkit-box-shadow: 0px 0px 4px #000000; box-shadow: 0px 0px 4px #000000; padding: 5px; margin-left: 22px; margin-bottom:20px; width: 547px; float: left;"> \
           <div class="form-inline" style="margin-bottom: 10px;"> \
             <button type="button" class="io-del btn btn-danger"><i class="icon-remove-sign icon-white"></i></button> \
             <label class="btn" style="font-size: 20px; color: black; opacity: 1;" disabled><b> {{name}}</b>, {{summary}} </label>\
@@ -1112,7 +1140,7 @@ lab23 ADD R1, R2, R3\n\
             <thead> \
               <tr> \
                 <th> Address HEX </th> \
-                <th style="width: 90px;"> Value HEX </th> \
+                <th style="width: 87px;"> Value HEX </th> \
                 <th style="width: 90px;"> Value DEC </th> \
                 <th style="width: 240px;"> Value BIN </th> \
               </tr> \
@@ -1122,12 +1150,12 @@ lab23 ADD R1, R2, R3\n\
               <tr class="io-loc-{{loc}}"> \
                 <td> <span class="uneditable-input io-loc" style="width: 75px;"> {{lochex}} </span> </td> \
                 {{#areFieldsEditable}} \
-                <td> <input type="text" style="width: 80px;" class="input io-mem-hex" value="{{hex}}"> </td> \
+                <td> <input type="text" style="width: 77px;" class="input io-mem-hex" value="{{hex}}"> </td> \
                 <td> <input type="text" style="width: 80px;" class="input io-mem-dec" value="{{dec}}"> </td> \
                 <td> <input type="text" style="width: 230px;" class="input io-mem-bin" value="{{bin}}"> </td> \
                 {{/areFieldsEditable}} \
                 {{^areFieldsEditable}} \
-                <td> <span style="width: 80px;" class="uneditable-input io-mem-hex" value="{{hex}}"> {{hex}} </span> </td> \
+                <td> <span style="width: 77px;" class="uneditable-input io-mem-hex" value="{{hex}}"> {{hex}} </span> </td> \
                 <td> <span style="width: 80px;" class="uneditable-input io-mem-dec" value="{{dec}}"> {{dec}} </span> </td> \
                 <td> <span style="width: 230px;" class="uneditable-input io-mem-bin" value="{{bin}}"> {{bin}} </span> </td> \
                 {{/areFieldsEditable}} \
@@ -1138,10 +1166,8 @@ lab23 ADD R1, R2, R3\n\
           </div>';
       $("#ioUnitType").change(function () {
         $("#ioUnitFormDynamic").html("");
-        $("#frisc-ct-freq").remove();
-        $("#frisc-ct-freq-label").remove();
-        $("#frisc-pio-freq").remove();
-        $("#frisc-pio-freq-label").remove();
+        $("#frisc-io-freq").remove();
+        $("#frisc-io-freq-label").remove();
         
         if ($(this).val() === 'generic') {
           defineGenericIoUnitTypeForm();
@@ -1182,12 +1208,12 @@ lab23 ADD R1, R2, R3\n\
           d.summary = "Generic IO unit";
           d.areFieldsEditable = true;
         } else if ($("#ioUnitType").val() === 'frisc-ct') {
-          var frequency = parseInt($("#frisc-ct-freq").val());
+          var frequency = parseInt($("#frisc-io-freq").val());
           d.summary = "FRISC-CT unit, " + frequency + "Hz";
           d.areFieldsEditable = false;
           d.freq = frequency;
         } else if ($("#ioUnitType").val() === 'frisc-pio') {
-          var frequency = parseInt($("#frisc-pio-freq").val());
+          var frequency = parseInt($("#frisc-io-freq").val());
           d.summary = "FRISC-PIO unit, " + frequency + "Hz";
           d.areFieldsEditable = false;
           d.freq = frequency;
@@ -1216,7 +1242,7 @@ lab23 ADD R1, R2, R3\n\
             memmapStart : $("#ioUnitMemmapStart").val(),
             memmapCount : $("#ioUnitMemmapCount").val(),
             ioUnitType : $("#ioUnitType").val(),
-            ioUnitFreq : $("#frisc-ct-freq").val()
+            ioUnitFreq : $("#frisc-io-freq").val()
           };
           
           var s = Mustache.render(ioUnitMustacheTemplate, d);
@@ -1262,10 +1288,8 @@ lab23 ADD R1, R2, R3\n\
           };
           
           $("#ioUnitFormStatic").each(function() { this.reset(); });
-          $("#frisc-ct-freq").remove();
-          $("#frisc-ct-freq-label").remove();
-          $("#frisc-pio-freq").remove();
-          $("#frisc-pio-freq-label").remove();
+          $("#frisc-io-freq").remove();
+          $("#frisc-io-freq-label").remove();
         } catch (e) {
           simulatorLog("<span class='label label-important'><b>IO error</b></span> " + e.toString() + "");
         }
@@ -1312,7 +1336,11 @@ lab23 ADD R1, R2, R3\n\
       function updateIoMemory(ioUnitId, ioMemoryAddress, valueType, blockPropagate) {
         var val = $(".io-loc-" + ioMemoryAddress + " .io-mem-" + valueType).val();
         
-        if (isNaN(parseInt(val))) {
+        if (valueType === 'hex' && isNaN(parseInt(val, 16))) {
+          val = 0;
+        } else if (valueType === 'dec' && isNaN(parseInt(val, 10))) {
+          val = 0;
+        } else if (valueType === 'bin' && isNaN(parseInt(val, 2))) {
           val = 0;
         }
 
@@ -1356,13 +1384,13 @@ lab23 ADD R1, R2, R3\n\
       }
       
       function defineFriscCtIoUnitTypeForm() {
-        $("#addIoUnit").before('<label id="frisc-ct-freq-label"> Frequency (Hz): </label>\n<input class="span1" type="text" style="margin-right: 4px;" id="frisc-ct-freq" value="1000">');
+        $("#addIoUnit").before('<label id="frisc-io-freq-label"> Frequency (Hz): </label>\n<input class="span1" type="text" style="margin-right: 4px;" id="frisc-io-freq" value="1000">');
         $("#ioUnitMemmapCount").val(4);
         $("#ioUnitMemmapCount").attr("disabled", true);
       }
       
       function defineFriscPioIoUnitTypeForm() {
-        $("#addIoUnit").before('<label id="frisc-pio-freq-label"> Frequency (Hz): </label>\n<input class="span1" type="text" style="margin-right: 4px;" id="frisc-pio-freq" value="1000">');
+        $("#addIoUnit").before('<label id="frisc-io-freq-label"> Frequency (Hz): </label>\n<input class="span1" type="text" style="margin-right: 4px;" id="frisc-io-freq" value="1000">');
         $("#ioUnitMemmapCount").val(4);
         $("#ioUnitMemmapCount").attr("disabled", true);
       }

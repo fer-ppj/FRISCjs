@@ -847,12 +847,26 @@ var FRISC = function() {
       }
     },
 
-    run: function() {
+    run: function(fastest) {
       if (typeof this.onBeforeRun !== 'undefined') {
         this.onBeforeRun();
       }
 
-      this._runTimer = setInterval(this.performCycle.bind(this), (1 / this._frequency) * 1000);
+      if (!fastest) {
+          this._runTimer = setInterval(this.performCycle.bind(this), (1 / this._frequency) * 1000);
+      } else {
+        while (1) {
+          try {
+            this.performCycle();
+          } catch (e) {
+            if (e.name === "Halting") {
+              break;
+            } else {
+              throw e;
+            }
+          }
+        }
+      }
     },
 
     pause: function() {
@@ -869,6 +883,11 @@ var FRISC = function() {
       if (typeof this.onStop !== 'undefined') {
         this.onStop();
       }
+
+      throw {
+        name: "Halting",
+        message: "Stop the CPU",
+      };
     },
 
     performCycle: function() {
@@ -897,7 +916,6 @@ var FRISC = function() {
         }
       } else {
         this.stop();
-
         throw new Error('undefined operation code or wrongly defined arguments');
       }
     },
